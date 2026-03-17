@@ -1,354 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PlanFlow — Login</title>
+  <title>PlanFlow</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
     :root {
-      --bg: #0a0c12;
-      --surface: #111420;
-      --surface2: #161924;
-      --border: rgba(255,255,255,0.07);
-      --border-focus: rgba(99,102,241,0.6);
-      --text: #e8eaf0;
-      --muted: #5a6080;
-      --subtle: #8890aa;
-      --accent: #6366f1;
-      --error: #f87171;
-      --error-bg: rgba(248,113,113,0.08);
-      --glow: rgba(99,102,241,0.15);
+      --bg: #0a0c12; --surface: #111420; --surface2: #161924; --surface-el: #1a1e2e;
+      --border: rgba(255,255,255,0.07); --border-s: #1f2337;
+      --text: #e8eaf0; --muted: #5a6080; --subtle: #8890aa;
+      --accent: #6366f1; --accent-h: #818cf8;
+      --accent-glow: rgba(99,102,241,0.12); --accent-soft: rgba(99,102,241,0.08);
+      --green: #10b981; --orange: #f59e0b; --red: #ef4444; --blue: #3b82f6; --pink: #ec4899;
+      --sidebar: 240px; --navbar: 60px;
     }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; z-index: 0; }
+    body::after { content: ''; position: fixed; top: -30%; left: 50%; transform: translateX(-50%); width: 700px; height: 700px; background: radial-gradient(ellipse, rgba(99,102,241,0.08), transparent 70%); pointer-events: none; z-index: 0; }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      position: relative;
-      overflow: hidden;
-    }
+    /* VIEWS */
+    .view { display: none; }
+    .view.active { display: flex; }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      top: -20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 400px;
-      background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .wrap {
-      width: 100%;
-      max-width: 400px;
-      position: relative;
-      z-index: 1;
-      animation: fadeUp 0.5s ease both;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .brand {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .logo-wrap {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 52px;
-      height: 52px;
-      background: linear-gradient(135deg, #6366f1, #a855f7);
-      border-radius: 14px;
-      margin-bottom: 1rem;
-      box-shadow: 0 0 32px rgba(99,102,241,0.35);
-    }
-
-    .logo-wrap svg {
-      width: 26px;
-      height: 26px;
-      fill: white;
-    }
-
-    .brand h1 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      color: var(--text);
-    }
-
-    .brand p {
-      font-size: 0.875rem;
-      color: var(--muted);
-      margin-top: 0.25rem;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 1.75rem;
-    }
-
-    .error-box {
-      display: none;
-      align-items: center;
-      gap: 0.625rem;
-      background: var(--error-bg);
-      border: 1px solid rgba(248,113,113,0.2);
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      margin-bottom: 1.25rem;
-      font-size: 0.8125rem;
-      color: var(--error);
-    }
-    .error-box.on { display: flex; }
-    .error-box svg { flex-shrink: 0; width: 15px; height: 15px; }
-
+    /* ===== LOGIN VIEW ===== */
+    #view-login { min-height: 100vh; align-items: center; justify-content: center; padding: 1.5rem; position: relative; z-index: 1; }
+    .login-wrap { width: 100%; max-width: 400px; animation: fadeUp 0.5s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .brand { text-align: center; margin-bottom: 2rem; }
+    .logo-wrap { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 14px; margin-bottom: 1rem; box-shadow: 0 0 32px rgba(99,102,241,0.35); }
+    .logo-wrap svg { width: 26px; height: 26px; fill: white; }
+    .brand h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.03em; }
+    .brand p { font-size: 0.875rem; color: var(--muted); margin-top: 0.25rem; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 1.75rem; }
+    .err-box { display: none; align-items: center; gap: 0.625rem; background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 0.8125rem; color: #f87171; }
+    .err-box.on { display: flex; }
+    .err-box svg { flex-shrink: 0; width: 15px; height: 15px; }
     .group { margin-bottom: 1.125rem; }
-
-    .group label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--subtle);
-      margin-bottom: 0.5rem;
-      letter-spacing: 0.02em;
-    }
-
+    .group label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--subtle); margin-bottom: 0.5rem; }
     .field { position: relative; }
-
-    .field-icon {
-      position: absolute;
-      left: 0.875rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 16px;
-      height: 16px;
-      pointer-events: none;
-      color: var(--muted);
-    }
-
-    .group input {
-      width: 100%;
-      padding: 0.75rem 0.875rem 0.75rem 2.625rem;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.9375rem;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
+    .field-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; pointer-events: none; color: var(--muted); }
+    .group input { width: 100%; padding: 0.75rem 0.875rem 0.75rem 2.625rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: inherit; font-size: 0.9375rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
     .group input::placeholder { color: var(--muted); }
-
-    .group input:focus {
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 3px var(--glow);
-    }
-
-    .group input:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    .eye-btn {
-      position: absolute;
-      right: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      padding: 0.25rem;
-      transition: color 0.2s;
-    }
-    .eye-btn:hover { color: var(--subtle); }
+    .group input:focus { border-color: rgba(99,102,241,0.6); box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+    .group input:disabled { opacity: 0.45; }
+    .eye-btn { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted); display: flex; padding: 0.25rem; }
     .eye-btn svg { width: 16px; height: 16px; }
-
-    .btn {
-      width: 100%;
-      padding: 0.8125rem;
-      background: linear-gradient(135deg, #6366f1, #7c3aed);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.9375rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 0.5rem;h
-      transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;h
-      box-shadow: 0 4px 20px rgba(99,102,241,0.3);
-    }
-
-    .btn:hover:not(:disabled) {
-      opacity: 0.9;
-      box-shadow: 0 4px 28px rgba(99,102,241,0.45);
-    }
-
-    .btn:active:not(:disabled) { transform: scale(0.985); }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,0.25);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      vertical-align: middle;
-      margin-right: 0.5rem;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .lockout {
-      display: none;
-      text-align: center;
-      font-size: 0.8125rem;
-      color: var(--muted);
-      margin-top: 1rem;
-    }
+    .btn-login { width: 100%; padding: 0.8125rem; background: linear-gradient(135deg, #6366f1, #7c3aed); color: white; border: none; border-radius: 10px; font-family: inherit; font-size: 0.9375rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; transition: opacity 0.2s; box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
+    .btn-login:hover:not(:disabled) { opacity: 0.9; }
+    .btn-login:disabled { opacity: 0.45; cursor: not-allowed; }
+    .spinner-sm { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.25); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 0.5rem; }
+    .lockout { display: none; text-align: center; font-size: 0.8125rem; color: var(--muted); margin-top: 1rem; }
     .lockout.on { display: block; }
-    .lockout span { color: var(--error); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .lockout span { color: #f87171; font-weight: 600; }
+    .footer-txt { text-align: center; margin-top: 1.5rem; font-size: 0.75rem; color: var(--muted); }
 
-    .footer {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
+    /* ===== APP LAYOUT (dashboard + planning) ===== */
+    #view-app { flex-direction: column; min-height: 100vh; position: relative; z-index: 1; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; height: var(--navbar); background: rgba(17,20,32,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; z-index: 100; }
+    .nav-brand { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; text-decoration: none; }
+    .nav-icon { width: 34px; height: 34px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+    .nav-icon svg { width: 18px; height: 18px; fill: white; }
+    .nav-title { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.025em; }
+    .nav-user { font-size: 0.8125rem; color: var(--subtle); background: var(--surface2); border: 1px solid var(--border); padding: 0.375rem 0.875rem; border-radius: 20px; }
+    .nav-user strong { color: var(--text); }
+    .btn-logout { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--subtle); font-family: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+    .btn-logout svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-logout:hover { color: var(--text); border-color: var(--border-s); }
+    .app-body { display: flex; padding-top: var(--navbar); min-height: 100vh; }
+    .sidebar { position: fixed; top: var(--navbar); left: 0; bottom: 0; width: var(--sidebar); background: rgba(17,20,32,0.6); border-right: 1px solid var(--border); padding: 1.25rem 0.75rem; z-index: 50; display: flex; flex-direction: column; gap: 0.25rem; overflow-y: auto; }
+    .sb-label { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0.5rem 0.75rem 0.375rem; }
+    .sb-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.625rem 0.75rem; border-radius: 8px; color: var(--subtle); font-size: 0.875rem; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.15s; border: none; background: none; font-family: inherit; width: 100%; text-align: left; }
+    .sb-link svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .sb-link:hover { background: var(--accent-soft); color: var(--text); }
+    .sb-link.active { background: var(--accent-glow); color: var(--accent-h); }
+    .sb-link.active svg { stroke: var(--accent-h); }
+    .sb-badge { margin-left: auto; font-size: 0.6875rem; padding: 0.125rem 0.5rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-h); font-weight: 600; }
+    .sb-divider { height: 1px; background: var(--border); margin: 0.75rem; }
+    .main { margin-left: var(--sidebar); flex: 1; padding: 1.5rem 2rem; }
+
+    /* ===== DASHBOARD VIEW ===== */
+    #view-dashboard { display: none; }
+    #view-dashboard.active { display: block; }
+    .welcome-card { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - var(--navbar) - 3rem); text-align: center; }
+    .welcome-icon { width: 64px; height: 64px; background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.2)); border: 1px solid rgba(99,102,241,0.3); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
+    .welcome-icon svg { width: 30px; height: 30px; fill: var(--accent); }
+    .welcome-card h2 { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+    .welcome-card p { color: var(--subtle); line-height: 1.6; margin-bottom: 1.5rem; }
+    .welcome-email { font-size: 0.8125rem; color: var(--accent); background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); padding: 0.375rem 1rem; border-radius: 20px; display: inline-block; margin-bottom: 1.5rem; }
+    .phase-badge { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--muted); background: var(--surface); border: 1px solid var(--border); padding: 0.5rem 1.25rem; border-radius: 10px; }
+    .phase-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ===== PLANNING VIEW ===== */
+    #view-planning { display: none; }
+    #view-planning.active { display: block; }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .cal-nav { display: flex; align-items: center; gap: 0.75rem; }
+    .cal-nav-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; color: var(--subtle); transition: all 0.15s; }
+    .cal-nav-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .cal-nav-btn:hover { background: var(--surface2); color: var(--text); }
+    .cal-title { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; min-width: 200px; text-align: center; }
+    .cal-today-btn { padding: 0.4375rem 0.875rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--subtle); font-family: inherit; font-size: 0.8125rem; cursor: pointer; transition: all 0.15s; }
+    .cal-today-btn:hover { background: var(--surface2); color: var(--text); }
+    .btn-new-event { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #6366f1, #7c3aed); border: none; border-radius: 8px; color: white; font-family: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+    .btn-new-event svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-new-event:hover { opacity: 0.9; }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; margin-bottom: 1px; }
+    .cal-weekday { padding: 0.625rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px 8px 0 0; }
+    .cal-weekday.weekend { color: var(--accent); opacity: 0.6; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--border); border-radius: 0 0 12px 12px; overflow: hidden; }
+    .cal-day { min-height: 110px; background: var(--surface); padding: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem; transition: background 0.15s; }
+    .cal-day:hover { background: var(--surface2); }
+    .cal-day.outside { background: rgba(17,20,32,0.4); }
+    .cal-day.outside .cal-day-num { opacity: 0.25; }
+    .cal-day.weekend { background: rgba(14,16,24,0.7); }
+    .cal-day.today { background: rgba(99,102,241,0.06); box-shadow: inset 0 0 0 1px rgba(99,102,241,0.3); }
+    .cal-day-num { font-size: 0.8125rem; font-weight: 600; color: var(--subtle); padding: 0.125rem 0.25rem; }
+    .today-dot { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: var(--accent); border-radius: 50%; color: white; font-size: 0.75rem; font-weight: 700; }
+    .cal-events { display: flex; flex-direction: column; gap: 2px; overflow: hidden; }
+    .event-pill { display: flex; align-items: center; gap: 0.375rem; padding: 0.1875rem 0.5rem; border-radius: 4px; font-size: 0.6875rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; line-height: 1.5; }
+    .event-pill-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .event-pill.violet { background: rgba(99,102,241,0.15); color: #a5b4fc; } .event-pill.violet .event-pill-dot { background: #6366f1; }
+    .event-pill.blue { background: rgba(59,130,246,0.15); color: #93c5fd; } .event-pill.blue .event-pill-dot { background: #3b82f6; }
+    .event-pill.green { background: rgba(16,185,129,0.15); color: #6ee7b7; } .event-pill.green .event-pill-dot { background: #10b981; }
+    .event-pill.orange { background: rgba(245,158,11,0.15); color: #fcd34d; } .event-pill.orange .event-pill-dot { background: #f59e0b; }
+    .event-pill.red { background: rgba(239,68,68,0.15); color: #fca5a5; } .event-pill.red .event-pill-dot { background: #ef4444; }
+    .event-pill.pink { background: rgba(236,72,153,0.15); color: #f9a8d4; } .event-pill.pink .event-pill-dot { background: #ec4899; }
+    .cal-more { font-size: 0.625rem; font-weight: 600; color: var(--muted); padding: 0.125rem 0.25rem; cursor: pointer; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(5,7,12,0.7); backdrop-filter: blur(8px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-card { background: var(--surface); border: 1px solid var(--border-s); border-radius: 16px; width: 100%; max-width: 460px; padding: 1.75rem; transform: translateY(12px) scale(0.97); transition: transform 0.25s cubic-bezier(0.16,1,0.3,1); box-shadow: 0 24px 64px rgba(0,0,0,0.4); }
+    .modal-overlay.open .modal-card { transform: translateY(0) scale(1); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .modal-title { font-size: 1.0625rem; font-weight: 700; }
+    .modal-close { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: transparent; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; color: var(--muted); }
+    .modal-close svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .modal-close:hover { background: var(--surface2); color: var(--text); }
+    .modal-field { margin-bottom: 1.125rem; }
+    .modal-field label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--subtle); margin-bottom: 0.375rem; }
+    .modal-field input, .modal-field textarea { width: 100%; padding: 0.625rem 0.75rem; background: var(--bg); border: 1px solid var(--border-s); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 0.875rem; outline: none; transition: border-color 0.2s; }
+    .modal-field textarea { resize: vertical; min-height: 72px; }
+    .modal-field input:focus, .modal-field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .modal-field input::placeholder, .modal-field textarea::placeholder { color: var(--muted); }
+    .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .modal-field input[type="datetime-local"] { color-scheme: dark; }
+    .color-swatches { display: flex; gap: 0.5rem; margin-top: 0.25rem; }
+    .color-swatch { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; position: relative; }
+    .color-swatch:hover { transform: scale(1.1); }
+    .color-swatch.selected { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px currentColor; }
+    .color-swatch.selected::after { content: ''; position: absolute; inset: 4px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 0.625rem; margin-top: 1.5rem; }
+    .btn-cancel { padding: 0.5625rem 1.125rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--subtle); font-family: inherit; font-size: 0.8125rem; cursor: pointer; }
+    .btn-cancel:hover { background: var(--surface2); color: var(--text); }
+    .btn-save { padding: 0.5625rem 1.25rem; background: linear-gradient(135deg, #6366f1, #7c3aed); border: none; border-radius: 8px; color: white; font-family: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer; }
+    .btn-save:hover { opacity: 0.9; }
+
+    /* LOADING */
+    .loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.3s; }
+    .loading-screen.hidden { opacity: 0; pointer-events: none; }
+    .loading-spinner { width: 32px; height: 32px; border: 3px solid var(--border-s); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="brand">
-    <div class="logo-wrap">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="3" y="14" width="7" height="7" rx="1"/>
-        <circle cx="17.5" cy="17.5" r="3.5"/>
-      </svg>
+
+<div class="loading-screen" id="loader"><div class="loading-spinner"></div></div>
+
+<!-- ===== LOGIN ===== -->
+<div id="view-login" class="view">
+  <div class="login-wrap">
+    <div class="brand">
+      <div class="logo-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/></svg></div>
+      <h1>PlanFlow</h1>
+      <p>Connectez-vous &agrave; votre espace</p>
     </div>
-    <h1>PlanFlow</h1>
-    <p>Sign in to your workspace</p>
+    <div class="card">
+      <div class="err-box" id="errBox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span id="errText"></span></div>
+      <form id="loginForm" autocomplete="on">
+        <div class="group">
+          <label>Adresse email</label>
+          <div class="field">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,4 12,13 2,4"/></svg>
+            <input type="email" id="loginEmail" placeholder="admin@planflow.io" autocomplete="email" required>
+          </div>
+        </div>
+        <div class="group">
+          <label>Mot de passe</label>
+          <div class="field">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="loginPass" placeholder="Votre mot de passe" autocomplete="current-password" required>
+            <button type="button" class="eye-btn" id="eyeBtn"><svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <button type="submit" class="btn-login" id="loginBtn">Se connecter</button>
+      </form>
+      <div class="lockout" id="lockout">Trop de tentatives. R&eacute;essayez dans <span id="countdown">60</span>s</div>
+    </div>
+    <div class="footer-txt">&copy; 2026 PlanFlow.</div>
   </div>
+</div>
 
-  <div class="card">
-    <div class="error-box" id="errBox">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      <span id="errText"></span>
+<!-- ===== APP (dashboard + planning) ===== -->
+<div id="view-app" class="view">
+  <nav class="navbar">
+    <div class="nav-brand" onclick="showPage('dashboard')">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/></svg></div>
+      <span class="nav-title">PlanFlow</span>
     </div>
-
-    <form id="loginForm" autocomplete="on">
-      <div class="group">
-        <label for="email">Email address</label>
-        <div class="field">
-          <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="4" width="20" height="16" rx="2"/>
-            <polyline points="22,4 12,13 2,4"/>
-          </svg>
-          <input type="email" id="email" name="email" placeholder="admin@planflow.io" autocomplete="email" required>
+    <div class="nav-user">Connect&eacute; : <strong id="navEmail">—</strong></div>
+    <button class="btn-logout" id="logoutBtn"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>D&eacute;connexion</button>
+  </nav>
+  <div class="app-body">
+    <aside class="sidebar">
+      <div class="sb-label">Navigation</div>
+      <button class="sb-link active" id="sb-dashboard" onclick="showPage('dashboard')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</button>
+      <button class="sb-link" id="sb-planning" onclick="showPage('planning')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Planning</button>
+      <button class="sb-link" disabled><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Stock<span class="sb-badge">Bient&ocirc;t</span></button>
+      <button class="sb-link" disabled><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Donn&eacute;es<span class="sb-badge">Bient&ocirc;t</span></button>
+      <div class="sb-divider"></div>
+      <button class="sb-link" disabled><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Param&egrave;tres<span class="sb-badge">Bient&ocirc;t</span></button>
+    </aside>
+    <main class="main">
+      <!-- Dashboard page -->
+      <div id="view-dashboard">
+        <div class="welcome-card">
+          <div class="welcome-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/></svg></div>
+          <h2>Bienvenue sur PlanFlow</h2>
+          <p>Votre espace de gestion de planning, stock et donn&eacute;es.</p>
+          <div class="welcome-email" id="dashEmail">—</div><br>
+          <div class="phase-badge">Phase 4 en cours de d&eacute;veloppement</div>
         </div>
       </div>
-
-      <div class="group">
-        <label for="password">Password</label>
-        <div class="field">
-          <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-          <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
-          <button type="button" class="eye-btn" id="eyeBtn" aria-label="Toggle password">
-            <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-          </button>
+      <!-- Planning page -->
+      <div id="view-planning">
+        <div class="cal-header">
+          <div class="cal-nav">
+            <button class="cal-nav-btn" id="prevMonth"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <h2 class="cal-title" id="calTitle"></h2>
+            <button class="cal-nav-btn" id="nextMonth"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <button class="cal-today-btn" id="todayBtn">Aujourd'hui</button>
+          </div>
+          <button class="btn-new-event" id="newEventBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nouvel &eacute;v&eacute;nement</button>
         </div>
+        <div class="cal-weekdays">
+          <div class="cal-weekday">Lun</div><div class="cal-weekday">Mar</div><div class="cal-weekday">Mer</div><div class="cal-weekday">Jeu</div><div class="cal-weekday">Ven</div><div class="cal-weekday weekend">Sam</div><div class="cal-weekday weekend">Dim</div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
       </div>
-
-      <button type="submit" class="btn" id="loginBtn">Sign in</button>
-    </form>
-
-    <div class="lockout" id="lockout">
-      Too many attempts. Try again in <span id="countdown">60</span>s
-    </div>
+    </main>
   </div>
+</div>
 
-  <div class="footer">&copy; 2026 PlanFlow. All rights reserved.</div>
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-card">
+    <div class="modal-header"><span class="modal-title">Nouvel &eacute;v&eacute;nement</span><button class="modal-close" id="modalClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-field"><label>Titre</label><input type="text" id="evTitle" placeholder="Nom de l'&eacute;v&eacute;nement"></div>
+    <div class="modal-field"><label>Description</label><textarea id="evDesc" placeholder="D&eacute;tails (optionnel)"></textarea></div>
+    <div class="modal-row">
+      <div class="modal-field"><label>D&eacute;but</label><input type="datetime-local" id="evStart"></div>
+      <div class="modal-field"><label>Fin</label><input type="datetime-local" id="evEnd"></div>
+    </div>
+    <div class="modal-field"><label>Couleur</label>
+      <div class="color-swatches" id="colorSwatches">
+        <div class="color-swatch selected" data-color="violet" style="background:#6366f1;color:#6366f1"></div>
+        <div class="color-swatch" data-color="blue" style="background:#3b82f6;color:#3b82f6"></div>
+        <div class="color-swatch" data-color="green" style="background:#10b981;color:#10b981"></div>
+        <div class="color-swatch" data-color="orange" style="background:#f59e0b;color:#f59e0b"></div>
+        <div class="color-swatch" data-color="red" style="background:#ef4444;color:#ef4444"></div>
+        <div class="color-swatch" data-color="pink" style="background:#ec4899;color:#ec4899"></div>
+      </div>
+    </div>
+    <div class="modal-actions"><button class="btn-cancel" id="modalCancel">Annuler</button><button class="btn-save" id="modalSave">Sauvegarder</button></div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
   // ===== CONFIGURE HERE =====
   const SUPABASE_URL = 'https://wvayzobqkmiyqbjygmnx.supabase.co'
-  const SUPABASE_ANON_KEY = 'sb_publishable_qRIcbMhrrVhdNRjisxwCJg_sA3k-HNS'
+  const SUPABASE_KEY = 'sb_publishable_qRIcbMhrrVhdNRjisxwCJg_sA3k-HNS'
   // ==========================
 
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  const loader = document.getElementById('loader')
 
-  let fails = 0
-  const MAX = 3
-  const LOCK = 60
-  let lockEnd = null
-  let lockTimer = null
+  // ---- NAV ----
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'))
+    document.getElementById(id).classList.add('active')
+  }
+  function showPage(page) {
+    document.querySelectorAll('#view-dashboard, #view-planning').forEach(v => v.classList.remove('active'))
+    document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'))
+    document.getElementById('view-' + page).classList.add('active')
+    document.getElementById('sb-' + page).classList.add('active')
+    if (page === 'planning') renderCalendar()
+  }
 
-  const form      = document.getElementById('loginForm')
-  const emailIn   = document.getElementById('email')
-  const passIn    = document.getElementById('password')
-  const btn       = document.getElementById('loginBtn')
-  const errBox    = document.getElementById('errBox')
-  const errText   = document.getElementById('errText')
-  const lockout   = document.getElementById('lockout')
-  const countdown = document.getElementById('countdown')
-  const eyeBtn    = document.getElementById('eyeBtn')
-  const eyeIcon   = document.getElementById('eyeIcon')
-
+  // ---- AUTH ----
   ;(async () => {
     const { data: { session } } = await sb.auth.getSession()
-    if (session) window.location.href = 'dashboard.html'
+    loader.classList.add('hidden')
+    setTimeout(() => loader.remove(), 300)
+    if (session) {
+      initApp(session.user.email)
+    } else {
+      showView('view-login')
+    }
   })()
 
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_OUT' || !session) showView('view-login')
+  })
+
+  function initApp(email) {
+    document.getElementById('navEmail').textContent = email
+    document.getElementById('dashEmail').textContent = email
+    showView('view-app')
+    showPage('dashboard')
+  }
+
+  // ---- LOGIN ----
+  let fails = 0, lockEnd = null, lockTimer = null
+  const loginForm = document.getElementById('loginForm')
+  const loginEmail = document.getElementById('loginEmail')
+  const loginPass = document.getElementById('loginPass')
+  const loginBtn = document.getElementById('loginBtn')
+  const errBox = document.getElementById('errBox')
+  const errText = document.getElementById('errText')
+  const lockout = document.getElementById('lockout')
+  const countdown = document.getElementById('countdown')
+  const eyeBtn = document.getElementById('eyeBtn')
+  const eyeIcon = document.getElementById('eyeIcon')
+
   eyeBtn.addEventListener('click', () => {
-    const show = passIn.type === 'password'
-    passIn.type = show ? 'text' : 'password'
+    const show = loginPass.type === 'password'
+    loginPass.type = show ? 'text' : 'password'
     eyeIcon.innerHTML = show
       ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
       : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
@@ -358,59 +351,129 @@
   function hideErr() { errBox.classList.remove('on') }
 
   function startLock() {
-    lockEnd = Date.now() + LOCK * 1000
-    btn.disabled = emailIn.disabled = passIn.disabled = true
+    lockEnd = Date.now() + 60000
+    loginBtn.disabled = loginEmail.disabled = loginPass.disabled = true
     lockout.classList.add('on')
     lockTimer = setInterval(() => {
       const rem = Math.ceil((lockEnd - Date.now()) / 1000)
-      if (rem <= 0) {
-        clearInterval(lockTimer)
-        lockEnd = null; fails = 0
-        btn.disabled = emailIn.disabled = passIn.disabled = false
-        lockout.classList.remove('on')
-        hideErr()
-      } else {
-        countdown.textContent = rem
-      }
+      if (rem <= 0) { clearInterval(lockTimer); lockEnd = null; fails = 0; loginBtn.disabled = loginEmail.disabled = loginPass.disabled = false; lockout.classList.remove('on'); hideErr() }
+      else countdown.textContent = rem
     }, 250)
   }
 
-  form.addEventListener('submit', async e => {
+  loginForm.addEventListener('submit', async e => {
     e.preventDefault()
     if (lockEnd && Date.now() < lockEnd) return
     hideErr()
-
-    const email = emailIn.value.trim()
-    const password = passIn.value
-    if (!email || !password) { showErr('Please enter your email and password.'); return }
-
-    btn.disabled = true
-    btn.innerHTML = '<span class="spinner"></span>Signing in…'
-
+    const email = loginEmail.value.trim()
+    const password = loginPass.value
+    if (!email || !password) { showErr('Veuillez remplir tous les champs.'); return }
+    loginBtn.disabled = true
+    loginBtn.innerHTML = '<span class="spinner-sm"></span>Connexion...'
     try {
       const { data, error } = await sb.auth.signInWithPassword({ email, password })
       if (error) {
         fails++
-        if (fails >= MAX) {
-          showErr('Too many failed attempts. Locked for 60 seconds.')
-          startLock()
-        } else {
-          const left = MAX - fails
-          showErr(`Invalid credentials. ${left} attempt${left > 1 ? 's' : ''} remaining.`)
-          btn.disabled = false
-        }
+        if (fails >= 3) { showErr('Trop de tentatives. Compte bloqué 60 secondes.'); startLock() }
+        else { const l = 3 - fails; showErr('Identifiants incorrects. ' + l + ' tentative' + (l > 1 ? 's' : '') + ' restante' + (l > 1 ? 's' : '') + '.'); loginBtn.disabled = false }
       } else if (data.session) {
-        window.location.href = 'dashboard.html'
+        fails = 0
+        initApp(data.session.user.email)
         return
       }
-    } catch {
-      showErr('Connection error. Please try again.')
-      btn.disabled = false
-    }
+    } catch { showErr('Erreur de connexion. Réessayez.'); loginBtn.disabled = false }
+    loginBtn.innerHTML = 'Se connecter'
+    if (!lockEnd) loginBtn.disabled = false
+  })
 
-    btn.innerHTML = 'Sign in'
-    if (!lockEnd) btn.disabled = false
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await sb.auth.signOut()
+    showView('view-login')
+    loginEmail.value = ''; loginPass.value = ''; hideErr()
+  })
+
+  // ---- CALENDAR ----
+  const today = new Date()
+  let curYear = today.getFullYear(), curMonth = today.getMonth()
+  const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+
+  function getSampleEvents() {
+    return [
+      {day:3,title:'Réunion équipe',color:'violet'},{day:3,title:'Livraison fournisseur',color:'green'},
+      {day:5,title:'Audit stock',color:'orange'},{day:8,title:'Planning sprint',color:'blue'},
+      {day:8,title:'Call client VIP',color:'red'},{day:10,title:'Formation interne',color:'pink'},
+      {day:12,title:'Inventaire mensuel',color:'green'},{day:15,title:'Revue KPI',color:'violet'},
+      {day:15,title:'Démo produit',color:'blue'},{day:18,title:'Maintenance serveur',color:'red'},
+      {day:20,title:'Sync direction',color:'orange'},{day:22,title:'Workshop UX',color:'pink'},
+      {day:25,title:'Clôture mensuelle',color:'orange'},{day:25,title:'Rapport analytique',color:'blue'},
+      {day:28,title:'Point fournisseurs',color:'green'}
+    ].filter(e => e.day <= new Date(curYear, curMonth + 1, 0).getDate())
+  }
+
+  function renderCalendar() {
+    document.getElementById('calTitle').textContent = MONTHS[curMonth] + ' ' + curYear
+    const firstDay = new Date(curYear, curMonth, 1)
+    const daysInMonth = new Date(curYear, curMonth + 1, 0).getDate()
+    let startDow = firstDay.getDay() - 1; if (startDow < 0) startDow = 6
+    const prevLast = new Date(curYear, curMonth, 0).getDate()
+    const totalCells = Math.ceil((startDow + daysInMonth) / 7) * 7
+    const evByDay = {}
+    getSampleEvents().forEach(e => { if (!evByDay[e.day]) evByDay[e.day] = []; evByDay[e.day].push(e) })
+    const td = today.getDate(), tm = today.getMonth(), ty = today.getFullYear()
+    let html = ''
+    for (let i = 0; i < totalCells; i++) {
+      const dayNum = i - startDow + 1
+      const dow = i % 7
+      let isOutside = false, displayNum, isToday = false
+      if (dayNum < 1) { isOutside = true; displayNum = prevLast + dayNum }
+      else if (dayNum > daysInMonth) { isOutside = true; displayNum = dayNum - daysInMonth }
+      else { displayNum = dayNum; if (dayNum === td && curMonth === tm && curYear === ty) isToday = true }
+      const cls = ['cal-day', isOutside && 'outside', dow >= 5 && !isOutside && 'weekend', isToday && 'today'].filter(Boolean).join(' ')
+      html += '<div class="' + cls + '">'
+      html += isToday ? '<span class="today-dot">' + displayNum + '</span>' : '<span class="cal-day-num">' + displayNum + '</span>'
+      if (!isOutside && evByDay[dayNum]) {
+        html += '<div class="cal-events">'
+        evByDay[dayNum].slice(0, 3).forEach(ev => { html += '<div class="event-pill ' + ev.color + '"><span class="event-pill-dot"></span>' + ev.title + '</div>' })
+        if (evByDay[dayNum].length > 3) html += '<span class="cal-more">+' + (evByDay[dayNum].length - 3) + ' de plus</span>'
+        html += '</div>'
+      }
+      html += '</div>'
+    }
+    document.getElementById('calGrid').innerHTML = html
+  }
+
+  document.getElementById('prevMonth').addEventListener('click', () => { curMonth--; if (curMonth < 0) { curMonth = 11; curYear-- } renderCalendar() })
+  document.getElementById('nextMonth').addEventListener('click', () => { curMonth++; if (curMonth > 11) { curMonth = 0; curYear++ } renderCalendar() })
+  document.getElementById('todayBtn').addEventListener('click', () => { curYear = today.getFullYear(); curMonth = today.getMonth(); renderCalendar() })
+
+  // ---- MODAL ----
+  const modalOverlay = document.getElementById('modalOverlay')
+  function openModal() {
+    const y = curYear, m = String(curMonth + 1).padStart(2, '0'), d = String(today.getDate()).padStart(2, '0')
+    document.getElementById('evStart').value = y + '-' + m + '-' + d + 'T09:00'
+    document.getElementById('evEnd').value = y + '-' + m + '-' + d + 'T10:00'
+    document.getElementById('evTitle').value = ''
+    document.getElementById('evDesc').value = ''
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'))
+    document.querySelector('[data-color="violet"]').classList.add('selected')
+    modalOverlay.classList.add('open')
+    setTimeout(() => document.getElementById('evTitle').focus(), 200)
+  }
+  function closeModal() { modalOverlay.classList.remove('open') }
+  document.getElementById('newEventBtn').addEventListener('click', openModal)
+  document.getElementById('modalClose').addEventListener('click', closeModal)
+  document.getElementById('modalCancel').addEventListener('click', closeModal)
+  modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal() })
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal() })
+  document.getElementById('colorSwatches').addEventListener('click', e => {
+    const s = e.target.closest('.color-swatch'); if (!s) return
+    document.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('selected')); s.classList.add('selected')
+  })
+  document.getElementById('modalSave').addEventListener('click', () => {
+    const t = document.getElementById('evTitle').value.trim()
+    if (!t) { document.getElementById('evTitle').style.borderColor = '#ef4444'; document.getElementById('evTitle').focus(); setTimeout(() => document.getElementById('evTitle').style.borderColor = '', 2000); return }
+    closeModal()
   })
 </script>
 </body>
-</html>
+          </html>
