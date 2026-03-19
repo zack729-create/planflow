@@ -3,125 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlanFlow — Planning</title>
+    <title>PlanFlow â Planning EmployÃ©s</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --bg: #0a0c12; --surface: #111420; --surface2: #161924; --surface-elevated: #1a1e2e;
-            --border: rgba(255,255,255,0.07); --border-solid: #1f2337;
-            --text: #e8eaf0; --muted: #5a6080; --subtle: #8890aa;
-            --accent: #6366f1; --accent-hover: #818cf8;
-            --accent-glow: rgba(99,102,241,0.12); --accent-soft: rgba(99,102,241,0.08);
-            --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; --pink: #ec4899;
-            --sidebar-width: 240px; --navbar-height: 60px;
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#0a0c12;--surface:#111420;--surface2:#161924;--surface-elevated:#1a1e2e;
+            --border:rgba(255,255,255,0.07);--border-solid:#1f2337;
+            --text:#e8eaf0;--muted:#5a6080;--subtle:#8890aa;
+            --accent:#6366f1;--accent-hover:#818cf8;--accent-glow:rgba(99,102,241,0.12);--accent-soft:rgba(99,102,241,0.08);
+            --blue:#3b82f6;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--pink:#ec4899;--cyan:#06b6d4;--amber:#d97706;--lime:#84cc16;--purple:#a855f7;--rose:#f43f5e;
+            --sidebar-width:240px;--navbar-height:60px;
         }
-        body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-        body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; z-index: 0; }
-        body::after { content: ''; position: fixed; top: -30%; left: 50%; transform: translateX(-50%); width: 700px; height: 700px; background: radial-gradient(ellipse, rgba(99,102,241,0.08), transparent 70%); pointer-events: none; z-index: 0; }
-        .navbar { position: fixed; top: 0; left: 0; right: 0; height: var(--navbar-height); background: rgba(17,20,32,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; z-index: 100; }
-        .navbar-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-        .navbar-brand-icon { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: linear-gradient(135deg, var(--accent), #a855f7); border-radius: 9px; }
-        .navbar-brand-icon svg { width: 18px; height: 18px; fill: white; }
-        .navbar-brand-text { font-size: 1.125rem; font-weight: 700; color: var(--text); letter-spacing: -0.025em; }
-        .navbar-center { display: flex; align-items: center; gap: 0.5rem; color: var(--subtle); font-size: 0.8125rem; }
-        .navbar-center svg { width: 15px; height: 15px; fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-        .btn-logout { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--subtle); font-family: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-        .btn-logout svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-        .btn-logout:hover { border-color: var(--border-solid); color: var(--text); background: var(--surface-elevated); }
-        .sidebar { position: fixed; top: var(--navbar-height); left: 0; bottom: 0; width: var(--sidebar-width); background: rgba(17,20,32,0.6); border-right: 1px solid var(--border); padding: 1.25rem 0.75rem; z-index: 50; display: flex; flex-direction: column; gap: 0.25rem; overflow-y: auto; }
-        .sidebar-label { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0.5rem 0.75rem 0.375rem; }
-        .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.625rem 0.75rem; border-radius: 8px; color: var(--subtle); font-size: 0.875rem; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.15s; user-select: none; }
-        .sidebar-link svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-        .sidebar-link:hover { background: var(--accent-soft); color: var(--text); }
-        .sidebar-link.active { background: var(--accent-glow); color: var(--accent-hover); }
-        .sidebar-link.active svg { stroke: var(--accent-hover); }
-        .sidebar-badge { margin-left: auto; font-size: 0.6875rem; padding: 0.125rem 0.5rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-hover); font-weight: 600; }
-        .sidebar-divider { height: 1px; background: var(--border); margin: 0.75rem 0.75rem; }
-        .main { margin-left: var(--sidebar-width); margin-top: var(--navbar-height); min-height: calc(100vh - var(--navbar-height)); padding: 1.5rem 2rem; position: relative; z-index: 1; }
-        .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-        .cal-nav { display: flex; align-items: center; gap: 0.75rem; }
-        .cal-nav-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.15s; color: var(--subtle); }
-        .cal-nav-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .cal-nav-btn:hover { background: var(--surface2); border-color: var(--border-solid); color: var(--text); }
-        .cal-title { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text); min-width: 200px; text-align: center; }
-        .cal-today-btn { padding: 0.4375rem 0.875rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--subtle); font-family: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
-        .cal-today-btn:hover { background: var(--surface2); border-color: var(--border-solid); color: var(--text); }
-        .cal-actions { display: flex; align-items: center; gap: 0.75rem; }
-        .btn-new-event { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, var(--accent), #7c3aed); border: none; border-radius: 8px; color: white; font-family: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
-        .btn-new-event svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .btn-new-event:hover { opacity: 0.9; }
-        .btn-new-event:active { transform: scale(0.97); }
-        .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; margin-bottom: 1px; }
-        .cal-weekday { padding: 0.625rem 0.75rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px 8px 0 0; }
-        .cal-weekday.weekend { color: var(--accent); opacity: 0.6; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--border); border-radius: 0 0 12px 12px; overflow: hidden; }
-        .cal-day { min-height: 110px; background: var(--surface); padding: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem; transition: background 0.15s; cursor: default; }
-        .cal-day:hover { background: var(--surface2); }
-        .cal-day.outside { background: rgba(17,20,32,0.4); }
-        .cal-day.outside .cal-day-num { opacity: 0.25; }
-        .cal-day.weekend { background: rgba(14,16,24,0.7); }
-        .cal-day.today { background: rgba(99,102,241,0.06); box-shadow: inset 0 0 0 1px rgba(99,102,241,0.3); }
-        .cal-day-num { font-size: 0.8125rem; font-weight: 600; color: var(--subtle); padding: 0.125rem 0.25rem; line-height: 1; margin-bottom: 0.125rem; }
-        .cal-day.today .cal-day-num { color: var(--accent-hover); }
-        .today-dot { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: var(--accent); border-radius: 50%; color: white; font-size: 0.75rem; font-weight: 700; }
-        .cal-events { display: flex; flex-direction: column; gap: 2px; flex: 1; overflow: hidden; }
-        .event-pill { display: flex; align-items: center; gap: 0.375rem; padding: 0.1875rem 0.5rem; border-radius: 4px; font-size: 0.6875rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; transition: opacity 0.15s; line-height: 1.5; }
-        .event-pill:hover { opacity: 0.8; }
-        .event-pill-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-        .event-pill.violet { background: rgba(99,102,241,0.15); color: #a5b4fc; }
-        .event-pill.violet .event-pill-dot { background: #6366f1; }
-        .event-pill.blue { background: rgba(59,130,246,0.15); color: #93c5fd; }
-        .event-pill.blue .event-pill-dot { background: #3b82f6; }
-        .event-pill.green { background: rgba(16,185,129,0.15); color: #6ee7b7; }
-        .event-pill.green .event-pill-dot { background: #10b981; }
-        .event-pill.orange { background: rgba(245,158,11,0.15); color: #fcd34d; }
-        .event-pill.orange .event-pill-dot { background: #f59e0b; }
-        .event-pill.red { background: rgba(239,68,68,0.15); color: #fca5a5; }
-        .event-pill.red .event-pill-dot { background: #ef4444; }
-        .event-pill.pink { background: rgba(236,72,153,0.15); color: #f9a8d4; }
-        .event-pill.pink .event-pill-dot { background: #ec4899; }
-        .cal-more { font-size: 0.625rem; font-weight: 600; color: var(--muted); padding: 0.125rem 0.25rem; cursor: pointer; }
-        .cal-more:hover { color: var(--subtle); }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(5,7,12,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
-        .modal-overlay.open { opacity: 1; pointer-events: all; }
-        .modal-card { background: var(--surface); border: 1px solid var(--border-solid); border-radius: 16px; width: 100%; max-width: 460px; padding: 1.75rem; transform: translateY(12px) scale(0.97); transition: transform 0.25s cubic-bezier(0.16,1,0.3,1); box-shadow: 0 24px 64px rgba(0,0,0,0.4); }
-        .modal-overlay.open .modal-card { transform: translateY(0) scale(1); }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-        .modal-title { font-size: 1.0625rem; font-weight: 700; color: var(--text); }
-        .modal-close { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: transparent; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; color: var(--muted); transition: all 0.15s; }
-        .modal-close svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .modal-close:hover { background: var(--surface2); color: var(--text); }
-        .modal-field { margin-bottom: 1.125rem; }
-        .modal-field label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--subtle); margin-bottom: 0.375rem; }
-        .modal-field input, .modal-field textarea { width: 100%; padding: 0.625rem 0.75rem; background: var(--bg); border: 1px solid var(--border-solid); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 0.875rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
-        .modal-field textarea { resize: vertical; min-height: 72px; }
-        .modal-field input:focus, .modal-field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-        .modal-field input::placeholder, .modal-field textarea::placeholder { color: var(--muted); }
-        .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-        .modal-field input[type="datetime-local"] { color-scheme: dark; }
-        .color-swatches { display: flex; gap: 0.5rem; margin-top: 0.25rem; }
-        .color-swatch { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; position: relative; }
-        .color-swatch:hover { transform: scale(1.1); }
-        .color-swatch.selected { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px currentColor; }
-        .color-swatch.selected::after { content: ''; position: absolute; inset: 4px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat; }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 0.625rem; margin-top: 1.5rem; }
-        .btn-cancel { padding: 0.5625rem 1.125rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--subtle); font-family: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
-        .btn-cancel:hover { background: var(--surface2); color: var(--text); }
-        .btn-save { padding: 0.5625rem 1.25rem; background: linear-gradient(135deg, var(--accent), #7c3aed); border: none; border-radius: 8px; color: white; font-family: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-        .btn-save:hover { opacity: 0.9; }
-        .loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.3s; }
-        .loading-screen.hidden { opacity: 0; pointer-events: none; }
-        .loading-spinner { width: 32px; height: 32px; border: 3px solid var(--border-solid); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; } .navbar-center { display: none; } .cal-day { min-height: 80px; } }
-        @media (max-width: 600px) { .main { padding: 1rem; } .cal-header { flex-wrap: wrap; gap: 0.75rem; } .cal-day { min-height: 64px; padding: 0.25rem; } .event-pill { font-size: 0.6rem; padding: 0.125rem 0.325rem; } .modal-card { margin: 1rem; padding: 1.25rem; } .modal-row { grid-template-columns: 1fr; } }
+        body{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+        body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(99,102,241,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+        body::after{content:'';position:fixed;top:-30%;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(ellipse,rgba(99,102,241,0.08),transparent 70%);pointer-events:none;z-index:0}
+
+        /* NAVBAR */
+        .navbar{position:fixed;top:0;left:0;right:0;height:var(--navbar-height);background:rgba(17,20,32,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;z-index:100}
+        .navbar-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .navbar-brand-icon{display:flex;align-items:center;justify-content:center;width:34px;height:34px;background:linear-gradient(135deg,var(--accent),#a855f7);border-radius:9px}
+        .navbar-brand-icon svg{width:18px;height:18px;fill:#fff}
+        .navbar-brand-text{font-size:1.125rem;font-weight:700;color:var(--text);letter-spacing:-.025em}
+        .navbar-center{display:flex;align-items:center;gap:.5rem;color:var(--subtle);font-size:.8125rem}
+        .navbar-center svg{width:15px;height:15px;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+        .btn-logout{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;background:0 0;border:1px solid var(--border);border-radius:8px;color:var(--subtle);font-family:inherit;font-size:.8125rem;font-weight:500;cursor:pointer;transition:all .2s}
+        .btn-logout svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+        .btn-logout:hover{border-color:var(--border-solid);color:var(--text);background:var(--surface-elevated)}
+
+        /* SIDEBAR */
+        .sidebar{position:fixed;top:var(--navbar-height);left:0;bottom:0;width:var(--sidebar-width);background:rgba(17,20,32,0.6);border-right:1px solid var(--border);padding:1.25rem .75rem;z-index:50;display:flex;flex-direction:column;gap:.25rem;overflow-y:auto}
+        .sidebar-label{font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:.5rem .75rem .375rem}
+        .sidebar-link{display:flex;align-items:center;gap:.75rem;padding:.625rem .75rem;border-radius:8px;color:var(--subtle);font-size:.875rem;font-weight:500;text-decoration:none;cursor:pointer;transition:all .15s;user-select:none}
+        .sidebar-link svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+        .sidebar-link:hover{background:var(--accent-soft);color:var(--text)}
+        .sidebar-link.active{background:var(--accent-glow);color:var(--accent-hover)}
+        .sidebar-link.active svg{stroke:var(--accent-hover)}
+        .sidebar-badge{margin-left:auto;font-size:.6875rem;padding:.125rem .5rem;border-radius:999px;background:var(--accent-soft);color:var(--accent-hover);font-weight:600}
+        .sidebar-divider{height:1px;background:var(--border);margin:.75rem}
+
+        /* MAIN */
+        .main{margin-left:var(--sidebar-width);margin-top:var(--navbar-height);min-height:calc(100vh - var(--navbar-height));padding:1.5rem 2rem;position:relative;z-index:1}
+
+        /* HEADER */
+        .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+        .week-nav{display:flex;align-items:center;gap:.75rem}
+        .week-nav-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;color:var(--subtle)}
+        .week-nav-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+        .week-nav-btn:hover{background:var(--surface2);border-color:var(--border-solid);color:var(--text)}
+        .week-title{font-size:1.125rem;font-weight:700;letter-spacing:-.02em;color:var(--text);min-width:280px;text-align:center}
+        .week-today-btn{padding:.4375rem .875rem;background:0 0;border:1px solid var(--border);border-radius:8px;color:var(--subtle);font-family:inherit;font-size:.8125rem;font-weight:500;cursor:pointer;transition:all .15s}
+        .week-today-btn:hover{background:var(--surface2);border-color:var(--border-solid);color:var(--text)}
+        .header-actions{display:flex;gap:.75rem;align-items:center}
+        .btn-generate{display:flex;align-items:center;gap:.5rem;padding:.5rem 1.125rem;background:linear-gradient(135deg,var(--accent),#7c3aed);border:none;border-radius:8px;color:#fff;font-family:inherit;font-size:.8125rem;font-weight:600;cursor:pointer;transition:all .2s}
+        .btn-generate svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+        .btn-generate:hover{opacity:.9}
+        .btn-generate:active{transform:scale(.97)}
+        .btn-generate.generating{opacity:.7;pointer-events:none}
+        .btn-export{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;background:0 0;border:1px solid var(--border);border-radius:8px;color:var(--subtle);font-family:inherit;font-size:.8125rem;font-weight:500;cursor:pointer;transition:all .15s}
+        .btn-export svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+        .btn-export:hover{background:var(--surface2);border-color:var(--border-solid);color:var(--text)}
+
+        /* STATS BAR */
+        .stats-bar{display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
+        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;display:flex;flex-direction:column;gap:.25rem;min-width:140px;flex:1}
+        .stat-label{font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+        .stat-value{font-size:1.125rem;font-weight:700;color:var(--text)}
+        .stat-value.warning{color:var(--orange)}
+        .stat-value.ok{color:var(--green)}
+
+        /* SCHEDULE GRID */
+        .schedule-wrapper{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+        .schedule-table{width:100%;border-collapse:collapse;min-width:900px}
+        .schedule-table th,.schedule-table td{padding:.5rem .625rem;text-align:center;border:1px solid var(--border);font-size:.8125rem;vertical-align:middle}
+        .schedule-table thead th{background:var(--surface);color:var(--muted);font-weight:600;text-transform:uppercase;font-size:.6875rem;letter-spacing:.06em;position:sticky;top:0;z-index:2}
+        .schedule-table thead th.today-col{background:rgba(99,102,241,0.1);color:var(--accent-hover)}
+        .schedule-table thead th.weekend-col{background:rgba(245,158,11,0.06);color:var(--orange)}
+        .schedule-table .emp-cell{text-align:left;padding:.5rem .75rem;background:var(--surface);position:sticky;left:0;z-index:1;min-width:150px;white-space:nowrap}
+        .emp-name{font-weight:600;color:var(--text);font-size:.8125rem}
+        .emp-role{font-size:.6875rem;color:var(--muted);margin-top:1px}
+        .emp-hours{font-size:.625rem;color:var(--subtle);font-variant-numeric:tabular-nums}
+        .schedule-table .section-row td{background:var(--surface2);font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-hover);padding:.375rem .75rem;text-align:left}
+        .shift-cell{min-width:110px;position:relative;padding:.375rem!important}
+        .shift-cell.today-col{background:rgba(99,102,241,0.04)}
+        .shift-cell.weekend-col{background:rgba(245,158,11,0.03)}
+        .shift-pill{display:inline-flex;flex-direction:column;align-items:center;gap:1px;padding:.25rem .5rem;border-radius:6px;font-size:.6875rem;font-weight:600;line-height:1.3;width:100%;cursor:default}
+        .shift-pill .shift-time{font-size:.625rem;font-weight:400;opacity:.8}
+        .shift-pill.morning{background:rgba(6,182,212,0.12);color:#67e8f9}
+        .shift-pill.evening{background:rgba(139,92,246,0.12);color:#c4b5fd}
+        .shift-pill.full{background:rgba(99,102,241,0.12);color:#a5b4fc}
+        .shift-pill.split{background:rgba(245,158,11,0.12);color:#fcd34d}
+        .shift-pill.boss{background:rgba(16,185,129,0.08);color:#6ee7b7;font-weight:500}
+        .shift-pill.off{background:0 0;color:var(--muted);font-weight:400;font-size:.75rem;opacity:.5}
+
+        .hours-total{font-size:.6875rem;font-weight:600;padding:.25rem .5rem;border-radius:6px;display:inline-block}
+        .hours-total.ok{background:rgba(16,185,129,0.1);color:#6ee7b7}
+        .hours-total.over{background:rgba(239,68,68,0.1);color:#fca5a5}
+        .hours-total.under{background:rgba(245,158,11,0.1);color:#fcd34d}
+
+        /* EMPTY STATE */
+        .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem;text-align:center}
+        .empty-icon{width:64px;height:64px;background:var(--accent-glow);border:1px solid rgba(99,102,241,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem}
+        .empty-icon svg{width:30px;height:30px;fill:none;stroke:var(--accent-hover);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+        .empty-state h2{font-size:1.25rem;font-weight:700;margin-bottom:.5rem}
+        .empty-state p{color:var(--subtle);font-size:.9375rem;max-width:400px;line-height:1.6;margin-bottom:1.5rem}
+
+        /* LEGEND */
+        .legend{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1rem;padding:.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px}
+        .legend-item{display:flex;align-items:center;gap:.375rem;font-size:.75rem;color:var(--subtle)}
+        .legend-dot{width:10px;height:10px;border-radius:3px}
+
+        /* LOADING */
+        .loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .3s}
+        .loading-screen.hidden{opacity:0;pointer-events:none}
+        .loading-spinner{width:32px;height:32px;border:3px solid var(--border-solid);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        @media(max-width:900px){.sidebar{display:none}.main{margin-left:0}.navbar-center{display:none}}
+        @media(max-width:600px){.main{padding:1rem}.stats-bar{flex-direction:column}}
     </style>
 </head>
 <body>
 <div class="loading-screen" id="loadingScreen"><div class="loading-spinner"></div></div>
+
 <nav class="navbar">
     <a class="navbar-brand" href="dashboard.html">
         <div class="navbar-brand-icon"><svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 17.5a3.5 3.5 0 1 0 7 0 3.5 3.5 0 1 0-7 0"/></svg></div>
@@ -129,168 +135,506 @@
     </a>
     <div class="navbar-center">
         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Connect&eacute; en tant que&nbsp;</span><strong id="userEmail">...</strong>
+        <span>ConnectÃ© en tant que&nbsp;</span><strong id="userEmail">...</strong>
     </div>
     <button class="btn-logout" id="logoutBtn">
         <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        D&eacute;connexion
+        DÃ©connexion
     </button>
 </nav>
+
 <aside class="sidebar">
     <div class="sidebar-label">Navigation</div>
     <a class="sidebar-link" href="dashboard.html"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</a>
     <a class="sidebar-link active" href="planning.html"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Planning</a>
-    <a class="sidebar-link" href="#"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Stock<span class="sidebar-badge">Bient&ocirc;t</span></a>
-    <a class="sidebar-link" href="#"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>Donn&eacute;es<span class="sidebar-badge">Bient&ocirc;t</span></a>
+    <a class="sidebar-link" href="#"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Stock<span class="sidebar-badge">BientÃ´t</span></a>
+    <a class="sidebar-link" href="#"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>DonnÃ©es<span class="sidebar-badge">BientÃ´t</span></a>
     <div class="sidebar-divider"></div>
-    <a class="sidebar-link" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Param&egrave;tres<span class="sidebar-badge">Bient&ocirc;t</span></a>
+    <a class="sidebar-link" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>ParamÃ¨tres<span class="sidebar-badge">BientÃ´t</span></a>
 </aside>
+
 <main class="main">
-    <div class="cal-header">
-        <div class="cal-nav">
-            <button class="cal-nav-btn" id="prevMonth"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-            <h2 class="cal-title" id="calTitle"></h2>
-            <button class="cal-nav-btn" id="nextMonth"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-            <button class="cal-today-btn" id="todayBtn">Aujourd'hui</button>
+    <div class="page-header">
+        <div class="week-nav">
+            <button class="week-nav-btn" id="prevWeek"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <h2 class="week-title" id="weekTitle"></h2>
+            <button class="week-nav-btn" id="nextWeek"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <button class="week-today-btn" id="todayBtn">Cette semaine</button>
         </div>
-        <div class="cal-actions">
-            <button class="btn-new-event" id="newEventBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nouvel &eacute;v&eacute;nement</button>
+        <div class="header-actions">
+            <button class="btn-generate" id="generateBtn">
+                <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                GÃ©nÃ©rer le planning
+            </button>
+            <button class="btn-export" id="exportBtn">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Exporter
+            </button>
         </div>
     </div>
-    <div class="cal-weekdays">
-        <div class="cal-weekday">Lun</div><div class="cal-weekday">Mar</div><div class="cal-weekday">Mer</div><div class="cal-weekday">Jeu</div><div class="cal-weekday">Ven</div><div class="cal-weekday weekend">Sam</div><div class="cal-weekday weekend">Dim</div>
+
+    <div class="stats-bar" id="statsBar"></div>
+    <div id="scheduleContainer">
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="16" y1="14" x2="16" y2="14.01"/></svg></div>
+            <h2>Aucun planning gÃ©nÃ©rÃ©</h2>
+            <p>Cliquez sur Â« GÃ©nÃ©rer le planning Â» pour crÃ©er automatiquement les shifts optimisÃ©s de la semaine.</p>
+        </div>
     </div>
-    <div class="cal-grid" id="calGrid"></div>
+    <div class="legend" id="legend" style="display:none">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(6,182,212,0.4)"></div>Matin (9h30-15h)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(139,92,246,0.4)"></div>Soir (18h-23h)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(245,158,11,0.4)"></div>Coupure (10h-15h / 18h-23h)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(99,102,241,0.4)"></div>JournÃ©e continue</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(16,185,129,0.2)"></div>Patron(ne)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:transparent;border:1px dashed var(--muted)"></div>Repos</div>
+    </div>
 </main>
-<div class="modal-overlay" id="modalOverlay">
-    <div class="modal-card">
-        <div class="modal-header"><span class="modal-title">Nouvel &eacute;v&eacute;nement</span><button class="modal-close" id="modalClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-        <div class="modal-field"><label for="eventTitle">Titre</label><input type="text" id="eventTitle" placeholder="Nom de l'&eacute;v&eacute;nement"></div>
-        <div class="modal-field"><label for="eventDesc">Description</label><textarea id="eventDesc" placeholder="D&eacute;tails (optionnel)"></textarea></div>
-        <div class="modal-row">
-            <div class="modal-field"><label for="eventStart">D&eacute;but</label><input type="datetime-local" id="eventStart"></div>
-            <div class="modal-field"><label for="eventEnd">Fin</label><input type="datetime-local" id="eventEnd"></div>
-        </div>
-        <div class="modal-field"><label>Couleur</label>
-            <div class="color-swatches" id="colorSwatches">
-                <div class="color-swatch selected" data-color="violet" style="background:#6366f1;color:#6366f1;"></div>
-                <div class="color-swatch" data-color="blue" style="background:#3b82f6;color:#3b82f6;"></div>
-                <div class="color-swatch" data-color="green" style="background:#10b981;color:#10b981;"></div>
-                <div class="color-swatch" data-color="orange" style="background:#f59e0b;color:#f59e0b;"></div>
-                <div class="color-swatch" data-color="red" style="background:#ef4444;color:#ef4444;"></div>
-                <div class="color-swatch" data-color="pink" style="background:#ec4899;color:#ec4899;"></div>
-            </div>
-        </div>
-        <div class="modal-actions"><button class="btn-cancel" id="modalCancel">Annuler</button><button class="btn-save" id="modalSave">Sauvegarder</button></div>
-    </div>
-</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-    const SUPABASE_URL = 'https://wvayzobqkmiyqbjygmnx.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_qRIcbMhrrVhdNRjisxwCJg_sA3k-HNS';
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const loadingScreen = document.getElementById('loadingScreen');
-    const userEmailEl = document.getElementById('userEmail');
-    const logoutBtn = document.getElementById('logoutBtn');
-    (async function init() {
-        const { data: { session } } = await sb.auth.getSession();
-        if (!session) { window.location.href = 'index.html'; return; }
-        userEmailEl.textContent = session.user.email || 'Utilisateur';
-        loadingScreen.classList.add('hidden');
-        setTimeout(() => loadingScreen.remove(), 300);
-    })();
-    sb.auth.onAuthStateChange((event, session) => { if (event === 'SIGNED_OUT' || !session) window.location.href = 'index.html'; });
-    logoutBtn.addEventListener('click', async () => { logoutBtn.disabled = true; logoutBtn.style.opacity = '0.5'; await sb.auth.signOut(); window.location.href = 'index.html'; });
-    const today = new Date();
-    let currentYear = today.getFullYear();
-    let currentMonth = today.getMonth();
-    const MONTH_NAMES = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-    function getSampleEvents(year, month) {
-        const events = [
-            { day: 3, title: 'Réunion équipe', color: 'violet' },{ day: 3, title: 'Livraison fournisseur', color: 'green' },
-            { day: 5, title: 'Audit stock', color: 'orange' },{ day: 8, title: 'Planning sprint', color: 'blue' },
-            { day: 8, title: 'Call client VIP', color: 'red' },{ day: 8, title: 'Mise à jour catalogue', color: 'violet' },
-            { day: 10, title: 'Formation interne', color: 'pink' },{ day: 12, title: 'Inventaire mensuel', color: 'green' },
-            { day: 15, title: 'Revue KPI', color: 'violet' },{ day: 15, title: 'Démo produit', color: 'blue' },
-            { day: 18, title: 'Maintenance serveur', color: 'red' },{ day: 20, title: 'Sync direction', color: 'orange' },
-            { day: 22, title: 'Workshop UX', color: 'pink' },{ day: 22, title: 'Préparation commande', color: 'green' },
-            { day: 25, title: 'Clôture mensuelle', color: 'orange' },{ day: 25, title: 'Rapport analytique', color: 'blue' },
-            { day: 25, title: 'Review code', color: 'violet' },{ day: 28, title: 'Point fournisseurs', color: 'green' }
-        ];
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        return events.filter(e => e.day <= daysInMonth);
+// ===== CONFIGURE HERE =====
+const SUPABASE_URL = 'https://wvayzobqkmiyqbjygmnx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_qRIcbMhrrVhdNRjisxwCJg_sA3k-HNS';
+// ==========================
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const loadingScreen = document.getElementById('loadingScreen');
+const userEmailEl = document.getElementById('userEmail');
+const logoutBtn = document.getElementById('logoutBtn');
+
+(async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = 'index.html'; return; }
+    userEmailEl.textContent = session.user.email || 'Utilisateur';
+    loadingScreen.classList.add('hidden');
+    setTimeout(() => loadingScreen.remove(), 300);
+})();
+sb.auth.onAuthStateChange((ev, s) => { if (ev === 'SIGNED_OUT' || !s) window.location.href = 'index.html'; });
+logoutBtn.addEventListener('click', async () => { logoutBtn.disabled = true; logoutBtn.style.opacity = '.5'; await sb.auth.signOut(); window.location.href = 'index.html'; });
+
+// ============================================================
+// EMPLOYEE DATA
+// ============================================================
+const EMPLOYEES = [
+    // Cuisine â 39h/sem, earliest 9:30, 2 repos
+    { id: 'chris',    name: 'Chris',    dept: 'cuisine', hours: 39, restDays: 2, earliest: 9.5,  color: '--cyan' },
+    { id: 'jeremy',   name: 'JÃ©rÃ©my',   dept: 'cuisine', hours: 39, restDays: 2, earliest: 9.5,  color: '--blue' },
+    { id: 'cedric',   name: 'CÃ©dric',   dept: 'cuisine', hours: 39, restDays: 2, earliest: 9.5,  color: '--accent' },
+    { id: 'ronald',   name: 'Ronald',   dept: 'cuisine', hours: 39, restDays: 2, earliest: 9.5,  color: '--purple' },
+    // Plonge â 20h/sem, only Ven/Sam/Dim
+    { id: 'elorm',    name: 'Elorm',    dept: 'plonge',  hours: 20, restDays: 0, earliest: 9.5,  color: '--amber', fixedDays: [4, 5, 6] },
+    // Salle â 35h/sem, earliest 10:00, 2 repos
+    { id: 'charline', name: 'Charline', dept: 'salle',   hours: 35, restDays: 2, earliest: 10,   color: '--pink' },
+    { id: 'olivier',  name: 'Olivier',  dept: 'salle',   hours: 35, restDays: 2, earliest: 10,   color: '--orange' },
+    { id: 'jerome',   name: 'JÃ©rÃ´me',   dept: 'salle',   hours: 35, restDays: 2, earliest: 10,   color: '--lime' },
+    { id: 'coline',   name: 'Coline',   dept: 'salle',   hours: 35, restDays: 2, earliest: 10,   color: '--rose' },
+    // Patrons â always present
+    { id: 'paul',     name: 'Paul',     dept: 'bar',     hours: 0,  restDays: 0, earliest: 9.5,  color: '--green', boss: true },
+    { id: 'louise',   name: 'Louise',   dept: 'bar',     hours: 0,  restDays: 0, earliest: 9.5,  color: '--green', boss: true },
+];
+
+const DEPT_LABELS = { cuisine: 'ð³ Cuisine', plonge: 'ð½ï¸ Plonge', salle: 'ðª Salle', bar: 'ð¸ Bar' };
+const DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+const DAY_NAMES_FULL = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+const MONTH_NAMES = ['janv.','fÃ©vr.','mars','avr.','mai','juin','juil.','aoÃ»t','sept.','oct.','nov.','dÃ©c.'];
+
+// Shift templates (start, end, hours, label, cssClass)
+const SHIFTS = {
+    MATIN:    { start: '9h30',  end: '15h00', h: 5.5, label: 'Matin',    css: 'morning' },
+    MATIN_S:  { start: '10h00', end: '15h00', h: 5,   label: 'Matin',    css: 'morning' },
+    SOIR:     { start: '18h00', end: '23h00', h: 5,   label: 'Soir',     css: 'evening' },
+    COUPURE:  { start: '10h-15h', end: '18h-23h', h: 10, label: 'Coupure', css: 'split' },
+    COUPURE_K:{ start: '9h30-15h', end: '18h-23h', h: 10.5, label: 'Coupure', css: 'split' },
+    CONTINU:  { start: '10h00', end: '23h00', h: 13,  label: 'Continu',  css: 'full' },
+    CONTINU_K:{ start: '9h30',  end: '23h00', h: 13.5,label: 'Continu',  css: 'full' },
+    PLONGE_L: { start: '10h00', end: '16h30', h: 6.5, label: 'Plonge',   css: 'morning' },
+    PLONGE_F: { start: '10h00', end: '23h00', h: 13,  label: 'Plonge',   css: 'full' },
+    PLONGE_C: { start: '10h-15h', end: '18h-22h', h: 9, label: 'Plonge', css: 'split' },
+    BOSS:     { start: '',      end: '',      h: 0,   label: 'PrÃ©sent(e)',css: 'boss' },
+    REPOS:    { start: '',      end: '',      h: 0,   label: 'REPOS',    css: 'off' },
+};
+
+// ============================================================
+// WEEK NAVIGATION
+// ============================================================
+const today = new Date();
+let weekOffset = 0;
+
+function getMonday(d) {
+    const date = new Date(d);
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(date.setDate(diff));
+}
+
+function getWeekDates() {
+    const ref = new Date(today);
+    ref.setDate(ref.getDate() + weekOffset * 7);
+    const mon = getMonday(ref);
+    const dates = [];
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(mon);
+        d.setDate(mon.getDate() + i);
+        dates.push(d);
     }
-    const calTitle = document.getElementById('calTitle');
-    const calGrid = document.getElementById('calGrid');
-    function renderCalendar() {
-        calTitle.textContent = MONTH_NAMES[currentMonth] + ' ' + currentYear;
-        const firstDay = new Date(currentYear, currentMonth, 1);
-        const lastDay = new Date(currentYear, currentMonth + 1, 0);
-        const daysInMonth = lastDay.getDate();
-        let startDow = firstDay.getDay() - 1;
-        if (startDow < 0) startDow = 6;
-        const prevLast = new Date(currentYear, currentMonth, 0).getDate();
-        const totalCells = Math.ceil((startDow + daysInMonth) / 7) * 7;
-        const events = getSampleEvents(currentYear, currentMonth);
-        const eventsByDay = {};
-        events.forEach(e => { if (!eventsByDay[e.day]) eventsByDay[e.day] = []; eventsByDay[e.day].push(e); });
-        const todayDate = today.getDate(), todayMonth = today.getMonth(), todayYear = today.getFullYear();
-        let html = '';
-        for (let i = 0; i < totalCells; i++) {
-            const dayNum = i - startDow + 1;
-            let isOutside = false, displayNum, isToday = false, isWeekend = false;
-            const dow = i % 7;
-            if (dow >= 5) isWeekend = true;
-            if (dayNum < 1) { isOutside = true; displayNum = prevLast + dayNum; }
-            else if (dayNum > daysInMonth) { isOutside = true; displayNum = dayNum - daysInMonth; }
-            else { displayNum = dayNum; if (dayNum === todayDate && currentMonth === todayMonth && currentYear === todayYear) isToday = true; }
-            const classes = ['cal-day'];
-            if (isOutside) classes.push('outside');
-            if (isWeekend && !isOutside) classes.push('weekend');
-            if (isToday) classes.push('today');
-            html += '<div class="' + classes.join(' ') + '">';
-            if (isToday) html += '<span class="today-dot">' + displayNum + '</span>';
-            else html += '<span class="cal-day-num">' + displayNum + '</span>';
-            if (!isOutside && eventsByDay[dayNum]) {
-                html += '<div class="cal-events">';
-                const dayEvents = eventsByDay[dayNum];
-                dayEvents.slice(0, 3).forEach(ev => { html += '<div class="event-pill ' + ev.color + '"><span class="event-pill-dot"></span>' + ev.title + '</div>'; });
-                if (dayEvents.length > 3) html += '<span class="cal-more">+' + (dayEvents.length - 3) + ' de plus</span>';
-                html += '</div>';
-            }
-            html += '</div>';
+    return dates;
+}
+
+function updateWeekTitle() {
+    const dates = getWeekDates();
+    const d0 = dates[0], d6 = dates[6];
+    const fmt = (d) => d.getDate() + ' ' + MONTH_NAMES[d.getMonth()];
+    document.getElementById('weekTitle').textContent =
+        'Semaine du ' + fmt(d0) + ' au ' + fmt(d6) + ' ' + d6.getFullYear();
+}
+
+document.getElementById('prevWeek').addEventListener('click', () => { weekOffset--; updateWeekTitle(); if (currentSchedule) renderSchedule(currentSchedule); });
+document.getElementById('nextWeek').addEventListener('click', () => { weekOffset++; updateWeekTitle(); if (currentSchedule) renderSchedule(currentSchedule); });
+document.getElementById('todayBtn').addEventListener('click', () => { weekOffset = 0; updateWeekTitle(); if (currentSchedule) renderSchedule(currentSchedule); });
+updateWeekTitle();
+
+// ============================================================
+// SCHEDULE GENERATION ENGINE
+// ============================================================
+let currentSchedule = null;
+
+function generateSchedule() {
+    const dates = getWeekDates();
+    const schedule = {};
+
+    // Initialize
+    EMPLOYEES.forEach(emp => {
+        schedule[emp.id] = new Array(7).fill(null);
+    });
+
+    // --- BOSSES: always present ---
+    EMPLOYEES.filter(e => e.boss).forEach(emp => {
+        for (let d = 0; d < 7; d++) schedule[emp.id][d] = SHIFTS.BOSS;
+    });
+
+    // --- ELORM (plonge): Ven=4, Sam=5, Dim=6, ~20h ---
+    // Distribute ~20h over 3 days: ~6.5h + ~6.5h + ~7h
+    schedule['elorm'][4] = SHIFTS.PLONGE_C;  // Ven: coupure 9h
+    schedule['elorm'][5] = SHIFTS.PLONGE_L;  // Sam: 6.5h
+    schedule['elorm'][6] = SHIFTS.PLONGE_L;  // Dim: 6.5h
+    // Adjust: 9 + 6.5 + 6.5 = 22h â close enough, we can tweak
+    // Better: Ven coupure (9h), Sam shorter, Dim shorter
+    // Let's do: Ven 10h-15h/18h-22h (8h), Sam 10h-16h (6h), Dim 10h-16h (6h) = 20h
+    schedule['elorm'][4] = { start: '10h-15h', end: '18h-22h', h: 9, label: 'Coupure', css: 'split' };
+    schedule['elorm'][5] = { start: '11h00', end: '16h30', h: 5.5, label: 'Plonge', css: 'morning' };
+    schedule['elorm'][6] = { start: '11h00', end: '16h30', h: 5.5, label: 'Plonge', css: 'morning' };
+    for (let d = 0; d < 7; d++) {
+        if (!schedule['elorm'][d]) schedule['elorm'][d] = SHIFTS.REPOS;
+    }
+
+    // --- CUISINE (Chris, JÃ©rÃ©my, CÃ©dric, Ronald) ---
+    // Rules: 39h/week each, 2 rest days, always â¥1 cook on duty, rush Ven/Sam/Dim
+    // Strategy:
+    //   - Weekend (Ven/Sam/Dim): 3-4 cooks on duty
+    //   - Weekday (Lun-Jeu): 2-3 cooks on duty
+    //   - Each cook gets 2 rest days, preferably in the week (Lun-Jeu)
+    //   - Working days: mix of coupure (10.5h) and matin/soir shifts to hit ~39h over 5 days
+    //   - 5 working days Ã 7.8h = 39h target
+    //   - Coupure day = 10.5h, shorter day ~5-5.5h => balance across week
+
+    const cooks = ['chris', 'jeremy', 'cedric', 'ronald'];
+
+    // Assign rest days: spread across Mon-Thu so weekends are fully staffed
+    // Each cook gets 2 rest days from [0,1,2,3] (Lun-Jeu)
+    const cookRestPatterns = [
+        [0, 1], // Chris: Lun+Mar
+        [1, 2], // JÃ©rÃ©my: Mar+Mer
+        [2, 3], // CÃ©dric: Mer+Jeu
+        [3, 0], // Ronald: Jeu+Lun
+    ];
+
+    cooks.forEach((cookId, idx) => {
+        const restDays = cookRestPatterns[idx];
+
+        // Mark rest days
+        restDays.forEach(d => { schedule[cookId][d] = SHIFTS.REPOS; });
+
+        // Working days: need to distribute ~39h over 5 days
+        // Weekend days (Ven=4, Sam=5, Dim=6): longer shifts (coupure 10.5h)
+        // Weekday working days: medium shifts
+        let totalH = 0;
+        const workDays = [];
+        for (let d = 0; d < 7; d++) {
+            if (!schedule[cookId][d]) workDays.push(d);
         }
-        calGrid.innerHTML = html;
+
+        // Assign shifts to hit ~39h
+        // 3 weekend days: at least 2 get coupure (10.5h), maybe 1 shorter
+        // 2 weekday working days: fill remaining hours
+        workDays.forEach(d => {
+            const isWeekend = d >= 4;
+            if (isWeekend) {
+                // Weekend: coupure 10.5h
+                schedule[cookId][d] = SHIFTS.COUPURE_K;
+                totalH += 10.5;
+            }
+        });
+
+        // Remaining weekday working days
+        const weekdayWork = workDays.filter(d => d < 4);
+        const remaining = 39 - totalH;
+        const perDay = remaining / weekdayWork.length;
+
+        weekdayWork.forEach((d, i) => {
+            if (perDay >= 8) {
+                // Coupure
+                schedule[cookId][d] = SHIFTS.COUPURE_K;
+                totalH += 10.5;
+            } else if (perDay >= 5) {
+                // Matin or Soir
+                if (i % 2 === 0) {
+                    schedule[cookId][d] = SHIFTS.MATIN;
+                    totalH += 5.5;
+                } else {
+                    schedule[cookId][d] = SHIFTS.SOIR;
+                    totalH += 5;
+                }
+            } else {
+                schedule[cookId][d] = SHIFTS.SOIR;
+                totalH += 5;
+            }
+        });
+    });
+
+    // --- Verify at least 1 cook every day ---
+    for (let d = 0; d < 7; d++) {
+        const activeCooks = cooks.filter(id => schedule[id][d] && schedule[id][d].css !== 'off');
+        if (activeCooks.length === 0) {
+            // Swap: find cook with rest this day and move their rest
+            const restingCook = cooks.find(id => schedule[id][d] && schedule[id][d].css === 'off');
+            if (restingCook) {
+                schedule[restingCook][d] = SHIFTS.COUPURE_K;
+                // Find another day to rest
+                for (let alt = 0; alt < 4; alt++) {
+                    const cooking = cooks.filter(id => schedule[id][alt] && schedule[id][alt].css !== 'off');
+                    if (cooking.length >= 3 && schedule[restingCook][alt] && schedule[restingCook][alt].css !== 'off') {
+                        schedule[restingCook][alt] = SHIFTS.REPOS;
+                        break;
+                    }
+                }
+            }
+        }
     }
-    renderCalendar();
-    document.getElementById('prevMonth').addEventListener('click', () => { currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); });
-    document.getElementById('nextMonth').addEventListener('click', () => { currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(); });
-    document.getElementById('todayBtn').addEventListener('click', () => { currentYear = today.getFullYear(); currentMonth = today.getMonth(); renderCalendar(); });
-    const modalOverlay = document.getElementById('modalOverlay');
-    const newEventBtn = document.getElementById('newEventBtn');
-    const modalClose = document.getElementById('modalClose');
-    const modalCancel = document.getElementById('modalCancel');
-    const modalSave = document.getElementById('modalSave');
-    const colorSwatches = document.getElementById('colorSwatches');
-    function openModal() {
-        const y = currentYear, m = String(currentMonth + 1).padStart(2, '0'), d = String(today.getDate()).padStart(2, '0');
-        document.getElementById('eventStart').value = y + '-' + m + '-' + d + 'T09:00';
-        document.getElementById('eventEnd').value = y + '-' + m + '-' + d + 'T10:00';
-        document.getElementById('eventTitle').value = '';
-        document.getElementById('eventDesc').value = '';
-        colorSwatches.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-        colorSwatches.querySelector('[data-color="violet"]').classList.add('selected');
-        modalOverlay.classList.add('open');
-        setTimeout(() => document.getElementById('eventTitle').focus(), 200);
+
+    // --- SALLE (Charline, Olivier, JÃ©rÃ´me, Coline) ---
+    // 35h/week each, 2 rest days, earliest 10h
+    // Strategy: similar to cuisine but 35h
+    // 5 working days Ã 7h = 35h
+    // Weekend: coupure (10h), weekdays: shorter
+
+    const servers = ['charline', 'olivier', 'jerome', 'coline'];
+    const serverRestPatterns = [
+        [0, 3], // Charline: Lun+Jeu
+        [1, 3], // Olivier: Mar+Jeu
+        [0, 2], // JÃ©rÃ´me: Lun+Mer
+        [2, 1], // Coline: Mer+Mar
+    ];
+
+    servers.forEach((srvId, idx) => {
+        const restDays = serverRestPatterns[idx];
+        restDays.forEach(d => { schedule[srvId][d] = SHIFTS.REPOS; });
+
+        let totalH = 0;
+        const workDays = [];
+        for (let d = 0; d < 7; d++) {
+            if (!schedule[srvId][d]) workDays.push(d);
+        }
+
+        // Weekend days: coupure (10h)
+        workDays.forEach(d => {
+            const isWeekend = d >= 4;
+            if (isWeekend) {
+                schedule[srvId][d] = SHIFTS.COUPURE;
+                totalH += 10;
+            }
+        });
+
+        // Fill weekdays to reach ~35h
+        const weekdayWork = workDays.filter(d => d < 4);
+        const remaining = 35 - totalH;
+
+        if (weekdayWork.length > 0) {
+            const perDay = remaining / weekdayWork.length;
+            weekdayWork.forEach((d, i) => {
+                if (perDay >= 8) {
+                    schedule[srvId][d] = SHIFTS.COUPURE;
+                    totalH += 10;
+                } else if (perDay >= 5) {
+                    if (i % 2 === 0) {
+                        schedule[srvId][d] = SHIFTS.MATIN_S;
+                        totalH += 5;
+                    } else {
+                        schedule[srvId][d] = SHIFTS.SOIR;
+                        totalH += 5;
+                    }
+                } else {
+                    schedule[srvId][d] = SHIFTS.SOIR;
+                    totalH += 5;
+                }
+            });
+        }
+    });
+
+    return schedule;
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function calcWeekHours(empId, schedule) {
+    let total = 0;
+    for (let d = 0; d < 7; d++) {
+        const shift = schedule[empId]?.[d];
+        if (shift) total += shift.h || 0;
     }
-    function closeModal() { modalOverlay.classList.remove('open'); }
-    newEventBtn.addEventListener('click', openModal);
-    modalClose.addEventListener('click', closeModal);
-    modalCancel.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal(); });
-    colorSwatches.addEventListener('click', (e) => { const swatch = e.target.closest('.color-swatch'); if (!swatch) return; colorSwatches.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected')); swatch.classList.add('selected'); });
-    modalSave.addEventListener('click', () => { const title = document.getElementById('eventTitle').value.trim(); if (!title) { document.getElementById('eventTitle').style.borderColor = '#ef4444'; document.getElementById('eventTitle').focus(); setTimeout(() => document.getElementById('eventTitle').style.borderColor = '', 2000); return; } closeModal(); });
+    return total;
+}
+
+function renderSchedule(schedule) {
+    const dates = getWeekDates();
+    const todayStr = today.toDateString();
+    const container = document.getElementById('scheduleContainer');
+    document.getElementById('emptyState')?.remove();
+    document.getElementById('legend').style.display = 'flex';
+
+    // Stats
+    const statsBar = document.getElementById('statsBar');
+    const totalStaff = EMPLOYEES.filter(e => !e.boss).length;
+    let totalHours = 0;
+    EMPLOYEES.filter(e => !e.boss && !e.fixedDays).forEach(e => { totalHours += calcWeekHours(e.id, schedule); });
+    const avgHours = (totalHours / EMPLOYEES.filter(e => !e.boss && !e.fixedDays).length).toFixed(1);
+
+    // Count coverage per day
+    let minCoverage = 99;
+    for (let d = 0; d < 7; d++) {
+        let count = 0;
+        EMPLOYEES.forEach(e => {
+            const sh = schedule[e.id]?.[d];
+            if (sh && sh.css !== 'off') count++;
+        });
+        if (count < minCoverage) minCoverage = count;
+    }
+
+    statsBar.innerHTML = `
+        <div class="stat-card"><span class="stat-label">EmployÃ©s actifs</span><span class="stat-value">${totalStaff + 2}</span></div>
+        <div class="stat-card"><span class="stat-label">Heures planifiÃ©es</span><span class="stat-value">${totalHours.toFixed(0)}h</span></div>
+        <div class="stat-card"><span class="stat-label">Moy. / employÃ©</span><span class="stat-value">${avgHours}h</span></div>
+        <div class="stat-card"><span class="stat-label">Couverture min.</span><span class="stat-value ${minCoverage >= 4 ? 'ok' : 'warning'}">${minCoverage} pers/jour</span></div>
+    `;
+
+    // Table
+    let html = '<div class="schedule-wrapper"><table class="schedule-table"><thead><tr>';
+    html += '<th class="emp-cell">EmployÃ©</th>';
+    dates.forEach((date, i) => {
+        const isToday = date.toDateString() === todayStr;
+        const isWE = i >= 4;
+        const cls = isToday ? 'today-col' : (isWE ? 'weekend-col' : '');
+        html += `<th class="${cls}">${DAY_NAMES[i]}<br><span style="font-weight:400;font-size:.625rem">${date.getDate()} ${MONTH_NAMES[date.getMonth()]}</span></th>`;
+    });
+    html += '<th>Total</th></tr></thead><tbody>';
+
+    const deptOrder = ['cuisine', 'plonge', 'salle', 'bar'];
+    deptOrder.forEach(dept => {
+        html += `<tr class="section-row"><td colspan="9">${DEPT_LABELS[dept]}</td></tr>`;
+        const deptEmps = EMPLOYEES.filter(e => e.dept === dept);
+
+        deptEmps.forEach(emp => {
+            html += '<tr>';
+            html += `<td class="emp-cell"><div class="emp-name">${emp.name}</div><div class="emp-role">${dept.charAt(0).toUpperCase() + dept.slice(1)}${emp.boss ? ' â Patron' : ''}</div><div class="emp-hours">${emp.hours > 0 ? emp.hours + 'h/sem' : (emp.boss ? 'Patron' : emp.hours + 'h/sem')}</div></td>`;
+
+            for (let d = 0; d < 7; d++) {
+                const isToday = dates[d].toDateString() === todayStr;
+                const isWE = d >= 4;
+                const cls = isToday ? 'today-col' : (isWE ? 'weekend-col' : '');
+                const shift = schedule[emp.id]?.[d];
+
+                html += `<td class="shift-cell ${cls}">`;
+                if (shift) {
+                    if (shift.css === 'off') {
+                        html += '<div class="shift-pill off">REPOS</div>';
+                    } else if (shift.css === 'boss') {
+                        html += '<div class="shift-pill boss">PrÃ©sent(e)</div>';
+                    } else {
+                        let timeLabel = '';
+                        if (shift.css === 'split') {
+                            timeLabel = shift.start + ' / ' + shift.end;
+                        } else if (shift.start) {
+                            timeLabel = shift.start + ' - ' + shift.end;
+                        }
+                        html += `<div class="shift-pill ${shift.css}">${shift.label}<span class="shift-time">${timeLabel}</span></div>`;
+                    }
+                }
+                html += '</td>';
+            }
+
+            // Total hours
+            const weekH = calcWeekHours(emp.id, schedule);
+            if (emp.boss) {
+                html += '<td><span class="hours-total ok">â</span></td>';
+            } else {
+                const diff = weekH - emp.hours;
+                const cls = Math.abs(diff) <= 1 ? 'ok' : (diff > 0 ? 'over' : 'under');
+                html += `<td><span class="hours-total ${cls}">${weekH.toFixed(1)}h</span></td>`;
+            }
+            html += '</tr>';
+        });
+    });
+
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+}
+
+// ============================================================
+// GENERATE BUTTON
+// ============================================================
+document.getElementById('generateBtn').addEventListener('click', () => {
+    const btn = document.getElementById('generateBtn');
+    btn.classList.add('generating');
+    btn.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite"></span> GÃ©nÃ©ration...';
+
+    setTimeout(() => {
+        currentSchedule = generateSchedule();
+        renderSchedule(currentSchedule);
+        btn.classList.remove('generating');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> RÃ©gÃ©nÃ©rer';
+    }, 800);
+});
+
+// ============================================================
+// EXPORT (basic CSV)
+// ============================================================
+document.getElementById('exportBtn').addEventListener('click', () => {
+    if (!currentSchedule) { alert('GÃ©nÃ©rez d\'abord un planning.'); return; }
+    const dates = getWeekDates();
+    let csv = 'EmployÃ©,DÃ©partement,' + dates.map((d,i) => DAY_NAMES_FULL[i] + ' ' + d.getDate() + '/' + (d.getMonth()+1)).join(',') + ',Total heures\n';
+
+    EMPLOYEES.forEach(emp => {
+        let row = emp.name + ',' + emp.dept;
+        for (let d = 0; d < 7; d++) {
+            const sh = currentSchedule[emp.id]?.[d];
+            if (!sh) row += ',';
+            else if (sh.css === 'off') row += ',REPOS';
+            else if (sh.css === 'boss') row += ',PrÃ©sent';
+            else row += ',"' + sh.label + (sh.start ? ' ' + sh.start + '-' + sh.end : '') + '"';
+        }
+        row += ',' + calcWeekHours(emp.id, currentSchedule).toFixed(1) + 'h';
+        csv += row + '\n';
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'planning_' + dates[0].toISOString().slice(0,10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+});
 </script>
 </body>
-  </html>
+</html>
